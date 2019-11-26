@@ -41,57 +41,8 @@ namespace ConsoleApp4
             this.Controls.Add(ball.ballPicture);
 
             Cannons = new List<Cannon>();
-
-            #region Terrain
-            var randomizer = new Random();
-
-            var rand1 = randomizer.NextDouble() + 1;
-            var rand2 = randomizer.NextDouble() + 2;
-            var rand3 = randomizer.NextDouble() + 3;
-
-            var offset = Constants.WindowHeight / 2;
-            var peakheight = 130;
-            var flatness = 4;
-
-            var peakHeights = new double[Constants.GroundSegments+1];
-            var counter = -1;
-            for (int i = 0; i < peakHeights.Length; i++)
-            {
-                double height = peakheight / rand1 * Math.Sin((float)i / flatness * rand1 + rand1);
-                height += peakheight / rand2 * Math.Sin((float)i / flatness * rand2 + rand2);
-                height += peakheight / rand3 * Math.Sin((float)i / flatness * rand3 + rand3);
-                height += offset;
-                peakHeights[i] = height;
-                if (i % (Constants.GroundSegments / 5) == 0 || counter > 0)
-                {
-                    counter++;
-                    if(counter == 1)
-                    {
-
-                    }
-                    else if(counter > 1 && counter < 5)
-                    {
-                        peakHeights[i] = peakHeights[i-1];
-                    }
-                    else
-                    {
-                        counter = 0;
-                    }
-                }                
-            }
-
-            var segs = Constants.GroundSegments;
-            for (int i = 0; i < Constants.GroundSegments; i++)
-            {
-                ground[i] = new Ground(Constants.WindowWidth / segs * i, peakHeights[i],
-                                       Constants.WindowWidth / segs * (i + 1), peakHeights[i + 1]);
-            }
-
-            #endregion
-
-            
-            
-            for (int i = 0; i < 4; i++)
+            DrawTerrain();
+            for (int i = 0; i < Constants.playerCount; i++)
             {
                 var c = new Cannon();
 
@@ -104,33 +55,75 @@ namespace ConsoleApp4
 
                 c.ImageSource = ImageProcessing.ARGBFilter(Image.FromFile("../images/cannon.png"), Constants.PlayersColors[i]);
                 c.cannonPicture.Image = (Bitmap)c.ImageSource.Clone();
-                c.cannonPicture.Location = new Point(i*100, 500);
+                c.cannonPicture.Location = new Point(i * 100, 500);
                 c.cannonPicture.Name = "cannonPicture" + i;
                 c.cannonPicture.Size = new System.Drawing.Size(10, 35);
                 c.cannonPicture.SizeMode = PictureBoxSizeMode.Zoom;
                 c.cannonPicture.BackColor = Color.Transparent;
                 c.cannonPicture.ClientSize = new Size(10, 35);
-                
-                var x = ground[Constants.GroundSegments / 5 * (i+1)].x;
 
-                c.carriagePicture.Location = new Point((int)x, 
-                    (int)ground[Constants.GroundSegments / 5 * (i+1)].y - c.carriagePicture.Size.Height);
+                var x = ground[Constants.GroundSegments / (Constants.playerCount + 1) * (i + 1)].x;
+
+                c.carriagePicture.Location = new Point((int)x,
+                    (int)ground[Constants.GroundSegments / (Constants.playerCount + 1) * (i + 1)].y - c.carriagePicture.Size.Height);
 
                 c.cannonPicture.Location = new Point((int)(x + 20),
-                    (int)ground[Constants.GroundSegments / 5 * (i + 1)].y - c.cannonPicture.Size.Height);
+                    (int)ground[Constants.GroundSegments / (Constants.playerCount + 1) * (i + 1)].y - c.cannonPicture.Size.Height);
 
 
                 this.Controls.Add(c.carriagePicture);
                 this.Controls.Add(c.cannonPicture);
-                
+
                 Cannons.Add(c);
-
             }
-
-
-
         }
 
+        private void DrawTerrain()
+        {
+            var randomizer = new Random();
+
+            var rand1 = randomizer.NextDouble() + 1;
+            var rand2 = randomizer.NextDouble() + 2;
+            var rand3 = randomizer.NextDouble() + 3;
+
+            var offset = Constants.WindowHeight / 2;
+            var peakheight = 130;
+            var flatness = 4;
+
+            var peakHeights = new double[Constants.GroundSegments + 1];
+            var counter = -1;
+            for (int i = 0; i < peakHeights.Length; i++)
+            {
+                double height = peakheight / rand1 * Math.Sin((float)i / flatness * rand1 + rand1);
+                height += peakheight / rand2 * Math.Sin((float)i / flatness * rand2 + rand2);
+                height += peakheight / rand3 * Math.Sin((float)i / flatness * rand3 + rand3);
+                height += offset;
+                peakHeights[i] = height;
+                if (i % (Constants.GroundSegments / (Constants.playerCount + 1)) == 0 || counter > 0)
+                {
+                    counter++;
+                    if (counter == 1)
+                    {
+
+                    }
+                    else if (counter > 1 && counter < 5)
+                    {
+                        peakHeights[i] = peakHeights[i - 1];
+                    }
+                    else
+                    {
+                        counter = 0;
+                    }
+                }
+            }
+
+            var segs = Constants.GroundSegments;
+            for (int i = 0; i < Constants.GroundSegments; i++)
+            {
+                ground[i] = new Ground(Constants.WindowWidth / segs * i, peakHeights[i],
+                                       Constants.WindowWidth / segs * (i + 1), peakHeights[i + 1]);
+            }
+        }
 
         private void InitializeComponent()
         {
@@ -144,7 +137,7 @@ namespace ConsoleApp4
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 1;
+            this.timer1.Interval = 3;
             this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // label1
@@ -177,6 +170,7 @@ namespace ConsoleApp4
             // 
             // MainForm
             // 
+            this.BackColor = System.Drawing.Color.CornflowerBlue;
             this.ClientSize = new System.Drawing.Size(1234, 611);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
@@ -192,62 +186,16 @@ namespace ConsoleApp4
 
         }
 
-
-        public static Bitmap RotateImage(Image image, PointF offset, float angle)
-        {
-            if (image == null)
-                throw new ArgumentNullException("image");
-
-            var rotatedBmp = new Bitmap(image.Width, image.Height);
-            rotatedBmp.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-            var g = Graphics.FromImage(rotatedBmp);
-
-            g.TranslateTransform(offset.X, offset.Y);
-            g.RotateTransform(angle);
-            g.TranslateTransform(-offset.X, -offset.Y);
-            g.DrawImage(image, new PointF(0, 0));
-
-            return rotatedBmp;
-        }
-
-        void CheckGroundCollision(Ground groundSegment)
-        {
-            var deltaX = ball.position.X - groundSegment.x;
-            var deltaY = ball.position.Y - groundSegment.y;
-
-            var cosine = Math.Cos(groundSegment.rot);
-            var sine = Math.Sin(groundSegment.rot);
-
-            var groundXTemp = cosine * deltaX + sine * deltaY;
-            var groundYTemp = cosine * deltaY - sine * deltaX;
-            var velocityXTemp = cosine * ball.velocity.X + sine * ball.velocity.Y;
-            var velocityYTemp = cosine * ball.velocity.Y - sine * ball.velocity.X;
-
-            if (groundYTemp > -ball.r &&
-              ball.position.X > groundSegment.x1 &&
-              ball.position.X < groundSegment.x2)
-            {
-                groundYTemp = -ball.r;
-                velocityYTemp *= -1.0;
-                velocityYTemp *= ball.damping;
-            }
-
-            deltaX = cosine * groundXTemp - sine * groundYTemp;
-            deltaY = cosine * groundYTemp + sine * groundXTemp;
-            ball.velocity.X = cosine * velocityXTemp - sine * velocityYTemp;
-            ball.velocity.Y = cosine * velocityYTemp + sine * velocityXTemp;
-            ball.position.X = groundSegment.x + deltaX;
-            ball.position.Y = groundSegment.y + deltaY;
-        }
         private void Timer1_Tick(object sender, EventArgs e)
         {
             ball.Move();
-            ball.ballPicture.Location = new Point((int)(ball.position.X - ball.r), (int)(ball.position.Y - ball.r));
+            ball.ballPicture.Location = new Point((int)(ball.position.X - ball.r),
+                (int)(ball.position.Y - ball.r));
             ball.CheckWallCollision();
 
 
             for (int i = 0; i < Constants.GroundSegments; i++)
-                CheckGroundCollision(ground[i]);
+                ball.CheckGroundCollision(ground[i]);
 
             var hitIndex = Hit();
             if (hitIndex != 0)
@@ -260,11 +208,11 @@ namespace ConsoleApp4
             {
                 if(!switchedMove)
                 {
-                    for (int i =0; i < 4; i++)
+                    for (int i =0; i < Constants.playerCount; i++)
                     {
-                        if (Cannons[(playerNum+1+i)%4].IsAlive)
+                        if (Cannons[(playerNum+1+i)% Constants.playerCount].IsAlive)
                         {
-                            playerNum = (playerNum + 1 + i) % 4;
+                            playerNum = (playerNum + 1 + i) % Constants.playerCount;
                             switchedMove = true;
                             break;
                         }
@@ -273,9 +221,9 @@ namespace ConsoleApp4
             }
         }
 
-        private int Hit()
+        public int Hit()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < Constants.playerCount; i++)
             {
                 if(i!=playerNum)
                 {
@@ -291,15 +239,16 @@ namespace ConsoleApp4
         {
             for (int i = 0; i < Constants.GroundSegments; i++)
             {
-                /*e.Graphics.FillPolygon(Brushes.Black, new Point[]
+                e.Graphics.FillPolygon(Brushes.Brown, new Point[]
                 {
                     new Point((int)ground[i].x1, (int)ground[i].y1),
                     new Point((int)ground[i].x2, (int)ground[i].y2),
-                    new Point((int)ground[i].x1, Constants.WindowHeight),
+                    new Point((int)ground[i].x2, Constants.WindowHeight),
                     new Point((int)ground[i].x1, Constants.WindowHeight)
-                });*/
-                e.Graphics.DrawLine(Pens.Black, (float)ground[i].x1, (float)ground[i].y1, 
-                                                (float)ground[i].x2, (float)ground[i].y2);
+                });
+
+                /*e.Graphics.DrawLine(Pens.Black, (float)ground[i].x1, (float)ground[i].y1, 
+                                                (float)ground[i].x2, (float)ground[i].y2);*/
             }
         }
 
@@ -317,7 +266,8 @@ namespace ConsoleApp4
                 label1.Text = "power :" + power;
                 label2.Text = "angle :" + angle;
 
-                Cannons[playerNum].cannonPicture.Image = RotateImage(Cannons[playerNum].ImageSource, new Point(5, 50), (float)angle);
+                Cannons[playerNum].cannonPicture.Image =
+                    ImageProcessing.RotateImage(Cannons[playerNum].ImageSource, new Point(5, 50), (float)angle);
             }
 
         }
@@ -345,18 +295,19 @@ namespace ConsoleApp4
         {
             if(IsMouseCtrl)
             {
-                power = 0.1*Helper.DistanceFromTwoPoints(e.X, e.Y,
-                    Cannons[playerNum].cannonPicture.Location.X, Cannons[playerNum].cannonPicture.Location.Y);
-                label1.Text = "power :" + power;
-                angle = (double)((-180 / Math.PI) * (Math.Atan2(Cannons[playerNum].cannonPicture.Location.Y - e.Y,
-                   Cannons[playerNum].cannonPicture.Location.X - e.X)-Math.PI));
+                var t = Helper.CalculateDistances(e.X, e.Y, Cannons[playerNum].cannonPicture.Location.X, Cannons[playerNum].cannonPicture.Location.Y);
+
+                power = t.Item1;
+                angle = t.Item2;
                 label2.Text = "angle :" + angle;
 
                 if (angle < 0) angle = 0;
                 if (angle > 180) angle = 180;
 
-                Cannons[playerNum].cannonPicture.Image = RotateImage(Cannons[playerNum].ImageSource, new Point(5, 50), (float)(-angle+90));
+                Cannons[playerNum].cannonPicture.Image = ImageProcessing.RotateImage(Cannons[playerNum].ImageSource, new Point(5, 50), (float)(-angle + 90));
             }
         }
+
+        
     }
 }

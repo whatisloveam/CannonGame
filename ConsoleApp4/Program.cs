@@ -11,6 +11,10 @@ namespace ConsoleApp4
         [STAThread]
         static void Main()
         {
+            var ball = new Ball(15, 0, 5);
+            ball.velocity = new Vector(-5, 0);
+            var t = ball.CheckGroundCollision(new Ground(0, 0, 20, 20));
+            ball.velocity = ball.velocity;
             Application.Run(new MainForm());
         }
     }

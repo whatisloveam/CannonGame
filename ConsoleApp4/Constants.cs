@@ -14,6 +14,7 @@ namespace ConsoleApp4
         public static int WindowHeight;
         public static Vector gravity = new Vector(0, 0.4);
         public static int GroundSegments = 40;
+        public static int playerCount = 4;
         public static ColorARGB[] PlayersColors =
         {
             new ColorARGB(1,1,0,0),
