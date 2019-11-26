@@ -50,9 +50,11 @@
   <ItemGroup>
     <Compile Include="Ball.cs" />
     <Compile Include="Cannon.cs" />
+    <Compile Include="ColorARGB.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Ground.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="ImageProcessing.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +78,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cannon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

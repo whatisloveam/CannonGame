@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ConsoleApp4
 {
@@ -11,10 +12,12 @@ namespace ConsoleApp4
         public Vector position;
         public Vector velocity;
         public double r;
-        public double damping = 0.8;
+        public double damping = 0.3;
+        public PictureBox ballPicture;
 
         public Ball(float x, float y, float r)
         {
+            ballPicture = new PictureBox();
             position = new Vector(x, y);
             velocity = new Vector(0.5, 0);
             this.r = r;
@@ -26,15 +29,11 @@ namespace ConsoleApp4
             position.Add(velocity);
         }
 
-        void Draw()
-        {
-        }
-
         public void CheckWallCollision()
         {
-            if (position.X > Constants.WindowWidth - r)
+            if (position.X > Constants.WindowWidth - 2*r)
             {
-                position.X = Constants.WindowHeight - r;
+                position.X = Constants.WindowWidth - 2*r;
                 velocity.X *= -damping;
             }
             else if (position.X < r)
